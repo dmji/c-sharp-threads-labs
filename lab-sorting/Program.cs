@@ -8,34 +8,20 @@ namespace lab_sorting
         static void Main(string[] args)
         {
             System.Diagnostics.Stopwatch time = new System.Diagnostics.Stopwatch();
-            int arrSize;
-            int threadCount=2;
             Console.WriteLine("Enter array size: ");
-            arrSize = Convert.ToInt32(Console.ReadLine());
+            int arrSize = Convert.ToInt32(Console.ReadLine());
             int[] array = new int[arrSize];
             for (int i = 0; i < arrSize; i++)
-                array[i] = new Random().Next(0, arrSize * 2);
+                array[i] = new Random().Next(arrSize);
+            Console.WriteLine("Enter max threads count: ");
+            int threadCountMax = Convert.ToInt32( Math.Log2( Convert.ToDouble(Console.ReadLine())))+1;
 
-            int[] arrayOneCore = array;
-            time.Start();
-            bubleSort test = new bubleSort(array);
-            test.thrd.Join();
-            time.Stop();
-            long timeOneCore = time.ElapsedMilliseconds;
-            //Console.WriteLine("\nAfter 1-thread sort: ");
-            //foreach (int d in test.arr)
-            //    Console.Write(d.ToString() + " ");
-            Console.WriteLine("1-thread sorting time: " + time.ElapsedMilliseconds);
-
-            do
+            for (int THRDLOOP=0;THRDLOOP<threadCountMax;THRDLOOP++)
             {
-                //Console.WriteLine("Enter threads count: ");
-                //threadCount = Convert.ToInt32(Console.ReadLine());
-                //if (threadCount == 0) break;
                 //Console.WriteLine("\nBefore sort: ");
                 //foreach (int d in array)
                 //    Console.Write(d.ToString() + " ");
-
+                int threadCount=Convert.ToInt32(Math.Pow(2,THRDLOOP));
                 int eps = arrSize % threadCount, eps_inc = 0, parted = 0;
                 if (eps > 0) eps_inc = 1;
                 time.Restart();
@@ -53,8 +39,8 @@ namespace lab_sorting
                         arrPart[j] = array[parted++];
                     thread[i] = new bubleSort(arrPart);
                 }
-                for (int j = 0; j < threadCount; j++)
-                    thread[j].thrd.Join();
+                for (int j = 0; j < threadCount; j++) thread[j].thrd.Join();
+                
                 int[] index = new int[threadCount];
                 int[] resultArray = new int[arrSize];
                 for (int i = 0; i < threadCount; i++)
@@ -81,12 +67,10 @@ namespace lab_sorting
                 //foreach (int d in resultArray)
                 //    Console.Write(d.ToString() + " ");
                 Console.WriteLine($"{threadCount}-thread sorting time: " + time.ElapsedMilliseconds);
-                threadCount++;
-            } while (time.ElapsedMilliseconds < timeOneCore || threadCount < 17);
+            }
         }
         class bubleSort
         {
-            public int[] ind;
             public int[] arr;
             public Thread thrd;
             public bubleSort(int[] src)
