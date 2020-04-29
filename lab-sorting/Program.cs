@@ -10,9 +10,39 @@ namespace lab_sorting
             System.Diagnostics.Stopwatch time = new System.Diagnostics.Stopwatch();
             Console.WriteLine("Enter array size: ");
             int arrSize = Convert.ToInt32(Console.ReadLine());
-            int[] array = new int[arrSize];
-            for (int i = 0; i < arrSize; i++)
-                array[i] = new Random().Next(arrSize);
+            int[] array;
+            if (arrSize == -1)
+            {
+                arrSize = 10000;
+                int testToArr = 0;
+                array = new int[arrSize];
+                string testTXT = System.IO.File.ReadAllText("test10k.txt");
+                while (testTXT.Contains(','))
+                {
+                    array[testToArr++] = Convert.ToInt32(testTXT.Substring(0, testTXT.IndexOf(',')));
+                    testTXT = testTXT.Substring(testTXT.IndexOf(',') + 2);
+                }
+                array[testToArr] = Convert.ToInt32(testTXT);
+            }
+            else if (arrSize == -2)
+            {
+                arrSize = 100000;
+                int testToArr = 0;
+                array = new int[arrSize];
+                string testTXT = System.IO.File.ReadAllText("test100k.txt");
+                while (testTXT.Contains(','))
+                {
+                    array[testToArr++] = Convert.ToInt32(testTXT.Substring(0, testTXT.IndexOf(',')));
+                    testTXT = testTXT.Substring(testTXT.IndexOf(',') + 2);
+                }
+                array[testToArr] = Convert.ToInt32(testTXT);
+            }
+            else
+            {
+                array = new int[arrSize];
+                for (int i = 0; i < arrSize; i++)
+                    array[i] = new Random().Next(arrSize);
+            }
             Console.WriteLine("Enter max threads count: ");
             int threadCountMax = Convert.ToInt32( Math.Log2( Convert.ToDouble(Console.ReadLine())))+1;
 
