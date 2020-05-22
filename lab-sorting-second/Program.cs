@@ -57,6 +57,18 @@ namespace lab_sorting_second
                 else if (array[testToArr] < min)
                     min = array[testToArr];
             }
+            else if(arrSize<-2)
+            {
+                arrSize = -arrSize;
+                array = new int[arrSize];
+                for (int i = 0; i < arrSize; i++)
+                {
+                    if (i % 10 == 0)
+                        array[i] = 1000;
+                    else
+                        array[i] = 1;
+                }
+            }
             else
             {
                 array = new int[arrSize];
